@@ -1,0 +1,75 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial bluetooth(0, 1); // RX, TX pins on Arduino (D0, D1)
+
+int motor1Pin1 = 2;  // IN1
+int motor1Pin2 = 3;  // IN2
+int motor2Pin1 = 4;  // IN3
+int motor2Pin2 = 5;  // IN4
+
+void setup() {
+  pinMode(motor1Pin1, OUTPUT);
+  pinMode(motor1Pin2, OUTPUT);
+  pinMode(motor2Pin1, OUTPUT);
+  pinMode(motor2Pin2, OUTPUT);
+  
+  // Define baud rate for Bluetooth communication
+  bluetooth.begin(9600);
+}
+
+void loop() {
+  if (bluetooth.available()) {
+    char command = bluetooth.read();
+    executeCommand(command);
+  }
+}
+
+void executeCommand(char command) {
+  switch(command) {
+    case 'F':
+      // Forward
+      digitalWrite(motor1Pin1, HIGH);
+      digitalWrite(motor1Pin2, LOW);
+      digitalWrite(motor2Pin1, HIGH);
+      digitalWrite(motor2Pin2, LOW);
+      delay(300); // Motorları 1 saniye boyunca çalıştır
+      stopMotors();
+      break;
+    case 'B':
+      // Backward
+      digitalWrite(motor1Pin1, LOW);
+      digitalWrite(motor1Pin2, HIGH);
+      digitalWrite(motor2Pin1, LOW);
+      digitalWrite(motor2Pin2, HIGH);
+      delay(300); // Motorları 1 saniye boyunca çalıştır
+      stopMotors();
+      break;
+    case 'L':
+      // Left
+      digitalWrite(motor1Pin1, LOW);
+      digitalWrite(motor1Pin2, HIGH);
+      digitalWrite(motor2Pin1, HIGH);
+      digitalWrite(motor2Pin2, LOW);
+      delay(800); // Motorları 0.5 saniye boyunca çalıştır
+      stopMotors();
+      break;
+    case 'R':
+      // Right
+      digitalWrite(motor1Pin1, HIGH);
+      digitalWrite(motor1Pin2, LOW);
+      digitalWrite(motor2Pin1, LOW);
+      digitalWrite(motor2Pin2, HIGH);
+      delay(800); // Motorları 0.5 saniye boyunca çalıştır
+      stopMotors();
+      break;
+    default:
+      break;
+  }
+}
+
+void stopMotors() {
+  digitalWrite(motor1Pin1, LOW);
+  digitalWrite(motor1Pin2, LOW);
+  digitalWrite(motor2Pin1, LOW);
+  digitalWrite(motor2Pin2, LOW);
+}
